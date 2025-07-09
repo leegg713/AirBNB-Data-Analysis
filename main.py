@@ -226,31 +226,41 @@ def display_menu():
         choice_lower = choice.lower()
 
         if choice == '1':
-            print("Full Table Below")
+            print("Full Table")
             print()
             print(get_full_table(sqliteConnection))
             time.sleep(5) #Uncomment after testing
         elif choice == '2' or choice_lower in ['most_reviews', 'most reviews']:
+            print("Most Reviews")
+            print()
             print(get_most_reviews(sqliteConnection))
             time.sleep(5) #Uncomment after testing
 
         elif choice == '3' or choice_lower in ['most_expensive', 'expensive']:
+            print("Most Expensive")
+            print()
             print(get_most_expensive(sqliteConnection))
             time.sleep(5)
 
         elif choice == '4' or choice_lower in ['cheapest']:
+            print("Cheapest")
+            print()
             print(get_cheapest(sqliteConnection))
             time.sleep(5)
 
         elif choice == '5' or choice_lower in ['total', 'count']:
-            print(get_total_listings(sqliteConnection).iloc[0, 0]) #Prints 1st thing in Dataframe which in this case is the count 
+            print(f"Total Count of Listings: {get_total_listings(sqliteConnection).iloc[0, 0]}") #Prints 1st thing in Dataframe which in this case is the count 
             time.sleep(5)
 
         elif choice == '6' or choice_lower in ['listing_count', 'neighborhoods']:
+            print("Listings Per Neighborhood")
+            print()
             print(get_listing_count_per_neighborhood(sqliteConnection))
             time.sleep(5)
 
         elif choice == '7' or choice_lower in ['room_types']:
+            print("Top Room Types")
+            print()
             print(get_top_room_types(sqliteConnection))
             time.sleep(5)
 
@@ -265,10 +275,14 @@ def display_menu():
             time.sleep(5)
 
         elif choice == '10' or choice_lower in ['most_listings']:
+            print("Hostest with the Mostest Listings")
+            print()
             print(get_most_listings(sqliteConnection).to_string(index=False)) #Removes the count on the side for each dataframe
             time.sleep(5)
 
         elif choice == '11' or choice_lower in ['cheapest_hosts']:
+            print("Price Per Host")
+            print()
             print(get_price_per_host(sqliteConnection))
             time.sleep(5)
 
