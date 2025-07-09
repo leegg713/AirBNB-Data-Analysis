@@ -1,5 +1,6 @@
 import pandas as pd
 import sqlite3
+import os, time
 
 #print("test")
 # https://www.geeksforgeeks.org/python/sql-using-python/
@@ -20,103 +21,172 @@ crsr = sqliteConnection.cursor()
 print("Connected to the database")
 
 # Write your SQL queries
-
+'''
 #Outputs the full table
 full_table_query = """
 Select * From Listings
 """
-#Gets 10 most amount of reviews AirBNBs
-most_reviews_query = """
+'''
+def get_full_table(sqliteConnection):
+    full_table_query = """
+    SELECT * FROM Listings;
+    """
+    try:
+        full_table = pd.read_sql_query(full_table_query, sqliteConnection)
+        return full_table
+    except sqlite3.Error as e:
+        print(f"Error executing full table query: {e}")
+        return []
+def get_most_reviews(sqliteConnection):
+    most_reviews_query = """
 SELECT name,  neighbourhood, number_of_reviews, price
 FROM listings
 WHERE number_of_reviews IS NOT NULL
 ORDER BY number_of_reviews DESC
 LIMIT 10;
 """
-#Gets 10 most expensive AirBNBs
-most_expensive_query = """
-SELECT name, host_name, number_of_reviews, price
+    try:
+        most_reviews = pd.read_sql_query(most_reviews_query, sqliteConnection)
+        return most_reviews
+    except sqlite3.Error as e:
+        print(f"Error executing full table query: {e}")
+        return []
+def get_most_expensive(sqliteConnection):
+    most_expensive_query = """
+    SELECT name, host_name, number_of_reviews, price
 FROM listings
 WHERE price IS NOT NULL
 ORDER BY CAST(price AS REAL) DESC
 LIMIT 10;
 """
-#Gets cheapest 10 AirBNBs
-cheapest_query = """
-SELECT name, host_name, number_of_reviews, price
-FROM listings
-WHERE price IS NOT NULL and TRIM(price) != ''
-ORDER BY CAST(price AS REAL) ASC
-LIMIT 10;
-"""
-#Gets total amount of listings
-total_query = """
-SELECT COUNT(*) FROM listings;
+    try:
+        most_expensive = pd.read_sql_query(most_expensive_query, sqliteConnection)
+        return most_expensive
+    except sqlite3.Error as e:
+        print(f"Error executing full table query: {e}")
+        return []
+
+def get_cheapest(sqliteConnection):
+    cheapest_query = """
+    SELECT name, host_name, number_of_reviews, price
+    FROM listings
+    WHERE price IS NOT NULL and TRIM(price) != ''
+    ORDER BY CAST(price AS REAL) ASC
+    LIMIT 10;
+    """
+    try:
+        cheapest = pd.read_sql_query(cheapest_query, sqliteConnection)
+        return cheapest
+    except sqlite3.Error as e:
+        print(f"Error executing cheapest query: {e}")
+        return []
 
 
-"""
-#Gets count of listings per neighborhood
-listing_count_per_neighborhood_query = """
-SELECT neighbourhood, COUNT(*) AS count
-FROM listings
-GROUP BY neighbourhood
-ORDER BY count DESC; 
-"""
-
-#Gets the top room types 
-top_room_types_query = """
-SELECT room_type, COUNT(*) AS count
-From listings
-GROUP BY room_type
-ORDER BY count DESC
-
-"""
-
-#Gets the overall average price and excludes 0's and blanks
-
-avg_price_query = """
-SELECT AVG(price) AS average_price
-FROM listings
-WHERE price IS NOT NULL AND TRIM(price) != ''
-"""
+def get_total_listings(sqliteConnection):
+    total_query = """
+    SELECT COUNT(*) FROM listings;
+    """
+    try:
+        total = pd.read_sql_query(total_query, sqliteConnection)
+        return total
+    except sqlite3.Error as e:
+        print(f"Error executing total listings query: {e}")
+        return []
 
 
-#Gets the overall average reviews and includes 0's and blanks in the calculation
-
-avg_reviews_query = """
-SELECT AVG(number_of_reviews) AS average_reviews
-FROM listings
-"""
-
-#Gets the top 10 hosts with the most listings
-#host_listings_count is already a column but made this for practice
-
-most_listings_query = """
-SELECT host_id, host_name, COUNT(*) AS total_listings
-FROM listings
-GROUP BY host_id, host_name
-ORDER BY total_listings DESC
-LIMIT 10;
+def get_listing_count_per_neighborhood(sqliteConnection):
+    listing_count_per_neighborhood_query = """
+    SELECT neighbourhood, COUNT(*) AS count
+    FROM listings
+    GROUP BY neighbourhood
+    ORDER BY count DESC; 
+    """
+    try:
+        result = pd.read_sql_query(listing_count_per_neighborhood_query, sqliteConnection)
+        return result
+    except sqlite3.Error as e:
+        print(f"Error executing listing count query: {e}")
+        return []
 
 
-"""
+def get_top_room_types(sqliteConnection):
+    top_room_types_query = """
+    SELECT room_type, COUNT(*) AS count
+    From listings
+    GROUP BY room_type
+    ORDER BY count DESC
+    """
+    try:
+        result = pd.read_sql_query(top_room_types_query, sqliteConnection)
+        return result
+    except sqlite3.Error as e:
+        print(f"Error executing top room types query: {e}")
+        return []
 
-#Gets the top 10 cheapest average price per host exlcuding hosts that are 0 or null and rounds to 2 decimal places
 
-price_per_host_query = """
-SELECT host_id, host_name, ROUND(AVG(price), 2) as average_price
-FROM listings
-WHERE price IS NOT NULL AND TRIM(price) != ''
-GROUP BY host_id, host_name
-ORDER BY average_price ASC
-LIMIT 10
-"""
+def get_avg_price(sqliteConnection):
+    avg_price_query = """
+    SELECT AVG(price) AS average_price
+    FROM listings
+    WHERE price IS NOT NULL AND TRIM(price) != ''
+    """
+    try:
+        result = pd.read_sql_query(avg_price_query, sqliteConnection)
+        return result
+    except sqlite3.Error as e:
+        print(f"Error executing average price query: {e}")
+        return []
 
 
-###Write a lot more queries above this line for SQL practice####
+def get_avg_reviews(sqliteConnection):
+    avg_reviews_query = """
+    SELECT AVG(number_of_reviews) AS average_reviews
+    FROM listings
+    """
+    try:
+        result = pd.read_sql_query(avg_reviews_query, sqliteConnection)
+        return result
+    except sqlite3.Error as e:
+        print(f"Error executing average reviews query: {e}")
+        return []
+
+
+def get_most_listings(sqliteConnection):
+    most_listings_query = """
+    SELECT host_id, host_name, COUNT(*) AS total_listings
+    FROM listings
+    GROUP BY host_id, host_name
+    ORDER BY total_listings DESC
+    LIMIT 10;
+    """
+    try:
+        result = pd.read_sql_query(most_listings_query, sqliteConnection)
+        return result
+    except sqlite3.Error as e:
+        print(f"Error executing most listings query: {e}")
+        return []
+
+
+def get_price_per_host(sqliteConnection):
+    price_per_host_query = """
+    SELECT host_id, host_name, ROUND(AVG(price), 2) as average_price
+    FROM listings
+    WHERE price IS NOT NULL AND TRIM(price) != ''
+    GROUP BY host_id, host_name
+    ORDER BY average_price ASC
+    LIMIT 10
+    """
+    try:
+        result = pd.read_sql_query(price_per_host_query, sqliteConnection)
+        return result
+    except sqlite3.Error as e:
+        print(f"Error executing price per host query: {e}")
+        return []
+
 
 
 # Run the query and load the result into a DataFrame
+'''
 most_reviews = pd.read_sql_query(most_reviews_query, sqliteConnection) 
 most_expensive = pd.read_sql_query(most_expensive_query, sqliteConnection) 
 full_table = pd.read_sql_query(full_table_query, sqliteConnection)
@@ -128,102 +198,95 @@ avg_price = pd.read_sql_query(avg_price_query, sqliteConnection)
 avg_reviews = pd.read_sql_query(avg_reviews_query,sqliteConnection)
 most_listings= pd.read_sql_query(most_listings_query, sqliteConnection)
 price_per_host= pd.read_sql_query(price_per_host_query, sqliteConnection)
-# close the connection
+'''
+#print(get_full_table(sqliteConnection))
+
+####PRINT STATEMENTS FOR TESTING WHEN CREATING NEW SQL QUERIES ######
+
+def display_menu():
+    print("Welcome to Lee's AirBNB Data Analysis Application!")
+
+    while True:
+        print("\n--- Let's Get Some Nashville Data! Yeehaw!! ---")
+        print("1. Print Full Table")
+        print("2. Show Top 10 Listings by Most Reviews")
+        print("3. Show Top 10 Most Expensive Listings")
+        print("4. Show Top 10 Cheapest Listings")
+        print("5. Show Total Number of Listings")
+        print("6. Show Listing Count per Neighborhood")
+        print("7. Show Top Room Types")
+        print("8. Show Average Price")
+        print("9. Show Average Reviews")
+        print("10. Show Top 10 Hosts with Most Listings")
+        print("11. Show Top 10 Cheapest Hosts by Avg Price")
+        print("0. Exit")
+
+        choice = input("Select an option (0–11): ").strip()
+        os.system('clear')
+        choice_lower = choice.lower()
+
+        if choice == '1':
+            print("Full Table Below")
+            print()
+            print(get_full_table(sqliteConnection))
+            time.sleep(5) #Uncomment after testing
+        elif choice == '2' or choice_lower in ['most_reviews', 'most reviews']:
+            print(get_most_reviews(sqliteConnection))
+            time.sleep(5) #Uncomment after testing
+
+        elif choice == '3' or choice_lower in ['most_expensive', 'expensive']:
+            print(get_most_expensive(sqliteConnection))
+            time.sleep(5)
+
+        elif choice == '4' or choice_lower in ['cheapest']:
+            print(get_cheapest(sqliteConnection))
+            time.sleep(5)
+
+        elif choice == '5' or choice_lower in ['total', 'count']:
+            print(get_total_listings(sqliteConnection).iloc[0, 0]) #Prints 1st thing in Dataframe which in this case is the count 
+            time.sleep(5)
+
+        elif choice == '6' or choice_lower in ['listing_count', 'neighborhoods']:
+            print(get_listing_count_per_neighborhood(sqliteConnection))
+            time.sleep(5)
+
+        elif choice == '7' or choice_lower in ['room_types']:
+            print(get_top_room_types(sqliteConnection))
+            time.sleep(5)
+
+        elif choice == '8' or choice_lower in ['avg_price', 'average price']:
+            avg_price = get_avg_price(sqliteConnection)
+            print("Average Price:", round(avg_price['average_price'][0], 2)) #Gets only the average price and does not output the 0 for it being the first dataframe
+            time.sleep(5)
+
+        elif choice == '9' or choice_lower in ['avg_reviews', 'average reviews']:
+            avg_reviews = get_avg_reviews(sqliteConnection)
+            print("Average Reviews:", round(avg_reviews['average_reviews'][0], 2)) #Gets only the average reviews number and does not output the 0 for it being the first dataframe
+            time.sleep(5)
+
+        elif choice == '10' or choice_lower in ['most_listings']:
+            print(get_most_listings(sqliteConnection).to_string(index=False)) #Removes the count on the side for each dataframe
+            time.sleep(5)
+
+        elif choice == '11' or choice_lower in ['cheapest_hosts']:
+            print(get_price_per_host(sqliteConnection))
+            time.sleep(5)
+
+        elif choice == '0' or choice_lower == 'exit':
+            print("Exiting the program.")
+            break
+
+        else:
+            print("❌ Invalid selection. Please try again.")
+
+# Main function to execute the program
+def main():
+    display_menu()
+
+#Executes the program
+if __name__ == "__main__":
+    main()
+
+# close the connection to the database
 sqliteConnection.close()
 
-####PRINT STATEMENTS######
-
-#print(full_table)
-#print(most_reviews) #Prints the query for most expensive
-#print(most_expensive) #Prints the query for most expensive
-#print(cheapest) #Prints cheapest
-#print(total) #Prints total count of listings
-#print(listing_count_per_neighborhood) #Prints total count of listings per neighborhood
-#print(top_room_types) #Prints all rooms types
-#print(avg_price) #Prints average price of a listing
-#print(avg_reviews) #Prints the average reviews for a listing
-#print(avg_reviews['average_reviews'][0]) #Prints just the average as the average is the first row in the pandas dataframe
-#print(most_listings) #Prints the top 10 hosts with the most listings
-#print(price_per_host) #Prints top 10 cheapest average prices for hosts
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#QUERIES TO MAKE##
-
-'''
-
-📊 Descriptive / Summary Queries
-Count total number of listings - Completed
-
-Find distinct neighborhoods and how many listings are in each - Completed
-
-Identify most common room types - Completed
-
-Average price overall and per room type - Completed
-
-Average number of reviews per listing - Completed
-
-🧑‍💼 Host-Based Queries
-Hosts with the most listings - Completed 
-
-Average price per host
-
-Hosts with the highest-rated or most-reviewed listings
-
-🗺️ Location-Based Queries
-Most expensive neighborhoods on average
-
-Cheapest neighborhoods on average
-
-Neighborhoods with the most listings
-
-Neighborhoods with highest average availability
-
-🕒 Availability & Activity
-Listings with year-round availability
-
-Listings with 0 availability but high reviews (possible inactive hosts)
-
-Listings with high availability but few or no reviews (possibly unpopular or new)
-
-Listings with the highest reviews per month
-
-⚠️ Data Quality / Anomalies
-Listings with missing or zero price
-
-Listings with extremely high or low prices (outliers)
-
-Listings with reviews but no availability
-
-Listings with missing host names or neighborhoods
-
-🔍 Filtering by Criteria
-Listings under a certain price with high reviews
-
-Private rooms under a price threshold
-
-Entire homes available all year
-
-Listings with at least N reviews
-
-🧮 Aggregates / Comparisons
-Min, max, avg price per room type
-
-Compare availability across room types
-
-Top 5 neighborhoods by number of reviews
-
-Compare average reviews between neighborhoods
-
-'''
