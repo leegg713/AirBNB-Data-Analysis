@@ -138,3 +138,73 @@ price_per_host= pd.read_sql_query(price_per_host_query, sqliteConnection)
 #print(avg_reviews['average_reviews'][0]) #Prints just the average as the average is the first row in the pandas dataframe
 #print(most_listings) #Prints the top 10 hosts with the most listings
 #print(price_per_host) #Prints top 10 cheapest average prices for hosts
+
+
+#QUERIES TO MAKE##
+
+'''
+
+📊 Descriptive / Summary Queries
+Count total number of listings - Completed
+
+Find distinct neighborhoods and how many listings are in each - Completed
+
+Identify most common room types - Completed
+
+Average price overall and per room type - Completed
+
+Average number of reviews per listing - Completed
+
+🧑‍💼 Host-Based Queries
+Hosts with the most listings - Completed 
+
+Average price per host
+
+Hosts with the highest-rated or most-reviewed listings
+
+🗺️ Location-Based Queries
+Most expensive neighborhoods on average
+
+Cheapest neighborhoods on average
+
+Neighborhoods with the most listings
+
+Neighborhoods with highest average availability
+
+🕒 Availability & Activity
+Listings with year-round availability
+
+Listings with 0 availability but high reviews (possible inactive hosts)
+
+Listings with high availability but few or no reviews (possibly unpopular or new)
+
+Listings with the highest reviews per month
+
+⚠️ Data Quality / Anomalies
+Listings with missing or zero price
+
+Listings with extremely high or low prices (outliers)
+
+Listings with reviews but no availability
+
+Listings with missing host names or neighborhoods
+
+🔍 Filtering by Criteria
+Listings under a certain price with high reviews
+
+Private rooms under a price threshold
+
+Entire homes available all year
+
+Listings with at least N reviews
+
+🧮 Aggregates / Comparisons
+Min, max, avg price per room type
+
+Compare availability across room types
+
+Top 5 neighborhoods by number of reviews
+
+Compare average reviews between neighborhoods
+
+'''
